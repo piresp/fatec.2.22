@@ -13,9 +13,57 @@ typedef struct {
 } Identity;
 
 typedef struct {
+	int region;
+	char capital[30];
+} Destiny;
+
+typedef struct {
+	int region;
+	char capital[30];
+} Origin;
+
+typedef struct {
 	Identity identity;
+	Destiny destiny;
+	Origin origin;
 	float price;
 } Order;
+
+enum All_regions { // REGION
+	Sul=1, Sudeste, CentroOeste, Nordeste, Norte, LastRegion
+} region;
+
+const char* regionA[] = {"SUL", "SUDESTE", "CENTRO-OESTE", "NORDESTE", "NORTE"};
+
+typedef enum { // SUL
+	Curitiba=1, Florianopolis, RioGrandeDoSul ,LastSouth
+} south;
+
+const char* southA[] = {"CURITIBA", "FLORIANÓPOLIS", "RIO GRANDE DO SUL", 0};
+
+typedef enum { // SUDESTE
+	SaoPaulo=1, BeloHorizonte, RioDeJaneiro, Vitoria, LastSouthEast
+} southeast;
+
+const char* southeastA[] = {"SÃO PAULO", "BELO HORIZONTE", "RIO DE JANEIRO", "VITÓRIA", 0};
+
+typedef enum { // CENTRO OESTE
+	Brasilia, Goiania, Cuiaba, CampoGrande, LastMidWest
+} midwest;
+
+const char* midwestA[] = {"BRASÍLIA", "GOIANIA", "CUIABA", "CAMPO GRANDE", 0};
+
+typedef enum { // NORDESTE
+	Salvador, SaoLuis, Teresina, Fortaleza, Natal, JoaoPessoa, Recife, Maceio, Aracaju, LastNortheast
+} northeast;
+
+const char* northeastA[] = {"SALVADOR", "SAO LUÍS", "TERESINA", "FORTALEZA", "NATAL", "JOÃO PESSOA", "RECIFE", "MACEIÓ", "ARACAJU", 0};
+
+typedef enum { // NORTE
+	RioBranco, Macapa, Manaus, Belem, PortoVelho, BoaVista, Palmas, LastNorth
+} north;
+
+const char* northA[] = {"RIO BRANCO", "MACAPÁ", "MANAUS", "BELÉM", "PORTO VELHO", "BOA VISTA", "PALMAS", 0};
 
 void clear() {
 	system("@cls||clear");
@@ -30,6 +78,15 @@ void display(const char* menu) {
 	printf("\n\n");
 	printf(menu);
 	break_line();
+}
+
+void display_capitals(const char* capitals[]) {
+	
+	int size = sizeof(capitals);
+	
+	for(int i = 0; i < size; i++) {
+		printf("\n%d - %s", i+1, capitals[i]);
+	}
 }
 
 void welcome() {
@@ -65,15 +122,15 @@ void end() {
 	}
 }
 
-Identity get_identity(Identity id) {
+int read_where(int number) {
+	int confirm = 0;
 	
-	break_line();
-	printf("IDENTIDADE:");
-	printf("\n\nNOME: %s",id.name);
-	printf("CPF: %s",id.cpf);
-	printf("IDADE: %d",id.age);
+	do {
+		puts("\n\nINSIRA NUMERO CORRESPONDENTE: ");
+		scanf("%d", &confirm);
+	} while (confirm <1 || confirm > number);
 	
-	break_line();
+	return confirm;
 }
 
 Identity set_identity(Identity id) {
@@ -92,26 +149,85 @@ Identity set_identity(Identity id) {
 	return id;
 }
 
-int read_where(int number) {
-	int confirm = 0;
+Identity get_identity(Identity id) {
 	
-	do {
-		puts("INSIRA O NÚMERO DE ONDE DESEJA IR: ");
-		scanf("%d", &confirm);
-	} while (confirm <1 || confirm > number);
+	break_line();
+	printf("IDENTIDADE:");
+	printf("\n\nNOME: %s",id.name);
+	printf("CPF: %s",id.cpf);
+	printf("IDADE: %d",id.age);
 	
-	return confirm;
+	break_line();
+}
+
+Origin set_origin_region(Origin origin) {
+	
+	display("ORIGEM: REGIÃO");
+	for(int i = 0; i< Norte; i++) {
+		printf("\n%d - %s", i+1, regionA[i]);
+	}
+	
+	int take_region = read_where(5);
+	origin.region = take_region;
+	
+	return origin;
+}
+
+Origin get_origin_region(Origin origin) {
+	break_line();
+	printf("%d - %s", origin.region, regionA[origin.region - 1]);
+}
+
+Origin set_origin_capital(Origin origin) {
+	
+	display("ORIGEM: CAPITAL");
+	
+	switch (origin.region) {
+		case 1:
+			display_capitals(southA);
+			read_where(sizeof(southA));
+			break;
+		
+		case 2:
+			display_capitals(southeastA);
+			read_where(sizeof(southeastA));
+			break;
+		
+		case 3:
+			display_capitals(midwestA);
+			read_where(sizeof(midwestA));
+			break;
+		
+		case 4:
+			display_capitals(northeastA);
+			read_where(sizeof(northeastA));
+			break;
+		
+		case 5:
+			display_capitals(northA);
+			read_where(sizeof(northA));
+			break;
+	}
 }
 
 int main() {
 
 	setlocale(LC_ALL, "Portuguese");
-	
+	/*
 	welcome();
+	
 	
 	Identity id;
 	id = set_identity(id);
 	get_identity(id);
 	
+	
+	;*/
+	Origin ori;
+	ori = set_origin_region(ori);
+	// get_origin_region(ori);
+	
+	set_origin_capital(ori);
+
 	return 0;
 }
